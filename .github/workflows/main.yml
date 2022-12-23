@@ -28,3 +28,23 @@ jobs:
         with:
           name: build
           path: build
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: 
+      name: production
+      url: http://github-actions-ok.sh
+    steps:
+      - name: Download the build artifact
+        uses: actions/download-artifact@3.0.0
+        with:
+         name: build
+      - name: Deploy to Surge
+        run: npx surge --project '.' --domain github-actions-ok.sh
+        env:
+         SURG_LOGIN: ${{secrets.SURGE_LOGIN}}
+         SURG_TOKEN: ${{secrets.SURGE_TOKEN}}
+         
+     
+     
